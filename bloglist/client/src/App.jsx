@@ -91,7 +91,9 @@ const App = () => {
       const returnedBlog = await blogService.update(blog.id, changedBlog)
       const updatedBlog = { ...returnedBlog, user: blog.user }
 
-      setBlogs(blogs.map((candidate) => (candidate.id === returnedBlog.id ? updatedBlog : candidate)))
+      setBlogs(
+        blogs.map((candidate) => (candidate.id === returnedBlog.id ? updatedBlog : candidate))
+      )
     } catch {
       setNotification({ text: 'liking the blog failed', type: 'error' })
     }
@@ -128,7 +130,9 @@ const App = () => {
           />
           <Route
             path="/blogs/new"
-            element={user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />}
+            element={
+              user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />
+            }
           />
           <Route
             path="/blogs/:id"
