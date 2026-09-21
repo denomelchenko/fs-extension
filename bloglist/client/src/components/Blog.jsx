@@ -22,7 +22,7 @@ const Blog = ({ blogs, user, handleLike, handleDelete }) => {
         <a href={blog.url}>{blog.url}</a>
       </Typography>
       <Typography>likes {blog.likes}</Typography>
-      <Typography>{blog.user ? blog.user.name : 'unknown'}</Typography>
+      <Typography>{blog.user.name}</Typography>
       <Stack direction="row" spacing={1} sx={{ mt: 1 }}>
         {user && (
           <Button variant="contained" color="primary" onClick={() => handleLike(blog)}>

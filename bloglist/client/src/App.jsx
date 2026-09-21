@@ -3,6 +3,7 @@ import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
+import ErrorBoundary from './components/ErrorBoundary'
 import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
 import Notification from './components/Notification'
@@ -117,23 +118,25 @@ const App = () => {
     <div>
       <Navigation user={user} onLogout={handleLogout} />
       <Notification message={notification} />
-      <Routes>
-        <Route path="/" element={<BlogList blogs={blogsByLikes} />} />
-        <Route
-          path="/login"
-          element={user ? <Navigate replace to="/" /> : <LoginForm onLogin={handleLogin} />}
-        />
-        <Route
-          path="/blogs/new"
-          element={user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />}
-        />
-        <Route
-          path="/blogs/:id"
-          element={
-            <Blog blogs={blogs} user={user} handleLike={handleLike} handleDelete={handleDelete} />
-          }
-        />
-      </Routes>
+      <ErrorBoundary>
+        <Routes>
+          <Route path="/" element={<BlogList blogs={blogsByLikes} />} />
+          <Route
+            path="/login"
+            element={user ? <Navigate replace to="/" /> : <LoginForm onLogin={handleLogin} />}
+          />
+          <Route
+            path="/blogs/new"
+            element={user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />}
+          />
+          <Route
+            path="/blogs/:id"
+            element={
+              <Blog blogs={blogs} user={user} handleLike={handleLike} handleDelete={handleDelete} />
+            }
+          />
+        </Routes>
+      </ErrorBoundary>
     </div>
   )
 }
