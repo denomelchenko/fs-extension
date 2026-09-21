@@ -93,7 +93,9 @@ const App = () => {
           />
           <Route
             path="/blogs/new"
-            element={user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />}
+            element={
+              user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />
+            }
           />
           <Route
             path="/blogs/:id"
