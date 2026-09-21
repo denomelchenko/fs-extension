@@ -37,5 +37,11 @@ export const useAnecdotes = () => {
     return savedAnecdote
   }, [])
 
-  return { anecdotes, addAnecdote }
+  const deleteAnecdote = useCallback(async (id) => {
+    await anecdoteService.remove(id)
+
+    setAnecdotes((current) => current.filter((anecdote) => anecdote.id !== id))
+  }, [])
+
+  return { anecdotes, addAnecdote, deleteAnecdote }
 }

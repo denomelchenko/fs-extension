@@ -1,7 +1,9 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 
 const Menu = () => {
   const padding = { paddingRight: 5 }
+
   return (
     <div>
       <Link style={padding} to="/">anecdotes</Link>
@@ -11,4 +13,4 @@ const Menu = () => {
   )
 }
 
-export default Menu
+export default memo(Menu)
