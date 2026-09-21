@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
@@ -9,34 +8,19 @@ import NotFound from './components/NotFound'
 import Notification from './components/Notification'
 import SingleBlog from './components/SingleBlog'
 import { useNotify } from './contexts/NotificationContext'
+import { useUser } from './contexts/UserContext'
 import { useBlogs } from './hooks/useBlogs'
-import blogService from './services/blogs'
-import loginService from './services/login'
 
 const App = () => {
-  const [user, setUser] = useState(() => {
-    const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
-
-    if (!loggedUserJSON) {
-      return null
-    }
-
-    const loggedUser = JSON.parse(loggedUserJSON)
-    blogService.setToken(loggedUser.token)
-
-    return loggedUser
-  })
+  const { user, login, logout } = useUser()
   const notify = useNotify()
   const { addBlog, likeBlog, deleteBlog } = useBlogs()
   const navigate = useNavigate()
 
   const handleLogin = async (username, password) => {
     try {
-      const loggedUser = await loginService.login({ username, password })
+      const loggedUser = await login(username, password)
 
-      window.localStorage.setItem('loggedBlogappUser', JSON.stringify(loggedUser))
-      blogService.setToken(loggedUser.token)
-      setUser(loggedUser)
       notify({ text: 'logged in as ' + loggedUser.name, type: 'success' })
       navigate('/')
     } catch {
@@ -45,9 +29,7 @@ const App = () => {
   }
 
   const handleLogout = () => {
-    window.localStorage.removeItem('loggedBlogappUser')
-    blogService.setToken(null)
-    setUser(null)
+    logout()
     notify({ text: 'logged out', type: 'success' })
     navigate('/')
   }
@@ -113,9 +95,7 @@ const App = () => {
           />
           <Route
             path="/blogs/:id"
-            element={
-              <SingleBlog user={user} handleLike={handleLike} handleDelete={handleDelete} />
-            }
+            element={<SingleBlog user={user} handleLike={handleLike} handleDelete={handleDelete} />}
           />
           <Route path="*" element={<NotFound />} />
         </Routes>
