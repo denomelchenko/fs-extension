@@ -6,6 +6,7 @@ import BlogList from './components/BlogList'
 import ErrorBoundary from './components/ErrorBoundary'
 import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
+import NotFound from './components/NotFound'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -135,6 +136,7 @@ const App = () => {
               <Blog blogs={blogs} user={user} handleLike={handleLike} handleDelete={handleDelete} />
             }
           />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>
     </div>
