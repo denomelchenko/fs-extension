@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useQueryClient } from '@tanstack/react-query'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
@@ -27,9 +26,8 @@ const App = () => {
 
     return loggedUser
   })
-  const { notify } = useNotify()
-  const { addBlog } = useBlogs()
-  const queryClient = useQueryClient()
+  const notify = useNotify()
+  const { addBlog, likeBlog, deleteBlog } = useBlogs()
   const navigate = useNavigate()
 
   const handleLogin = async (username, password) => {
@@ -78,8 +76,7 @@ const App = () => {
     }
 
     try {
-      await blogService.update(blog.id, changedBlog)
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      await likeBlog({ id: blog.id, blog: changedBlog })
     } catch {
       notify({ text: 'liking the blog failed', type: 'error' })
     }
@@ -91,8 +88,7 @@ const App = () => {
     }
 
     try {
-      await blogService.remove(blog.id)
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      await deleteBlog(blog.id)
       notify({ text: 'blog ' + blog.title + ' removed', type: 'success' })
       navigate('/')
     } catch {
