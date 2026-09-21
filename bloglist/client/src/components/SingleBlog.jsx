@@ -1,5 +1,6 @@
 import { useParams } from 'react-router-dom'
 import Blog from './Blog'
+import Comments from './Comments'
 import NotFound from './NotFound'
 import { useBlogs } from '../hooks/useBlogs'
 
@@ -17,7 +18,12 @@ const SingleBlog = ({ user, handleLike, handleDelete }) => {
     return <NotFound />
   }
 
-  return <Blog blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
+  return (
+    <div>
+      <Blog blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
+      <Comments comments={blog.comments} />
+    </div>
+  )
 }
 
 export default SingleBlog
