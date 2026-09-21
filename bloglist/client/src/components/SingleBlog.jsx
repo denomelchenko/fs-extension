@@ -6,7 +6,7 @@ import { useBlogs } from '../hooks/useBlogs'
 
 const SingleBlog = ({ user, handleLike, handleDelete }) => {
   const { id } = useParams()
-  const { blogs, isPending } = useBlogs()
+  const { blogs, isPending, addComment } = useBlogs()
 
   if (isPending) {
     return null
@@ -21,7 +21,10 @@ const SingleBlog = ({ user, handleLike, handleDelete }) => {
   return (
     <div>
       <Blog blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
-      <Comments comments={blog.comments} />
+      <Comments
+        comments={blog.comments}
+        addComment={(comment) => addComment({ id: blog.id, comment })}
+      />
     </div>
   )
 }

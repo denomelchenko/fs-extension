@@ -26,6 +26,11 @@ export const useBlogs = () => {
     onSuccess: invalidateBlogs,
   })
 
+  const addCommentMutation = useMutation({
+    mutationFn: ({ id, comment }) => blogService.addComment(id, comment),
+    onSuccess: invalidateBlogs,
+  })
+
   return {
     blogs: blogsQuery.data,
     isPending: blogsQuery.isPending,
@@ -33,5 +38,6 @@ export const useBlogs = () => {
     addBlog: createBlogMutation.mutateAsync,
     likeBlog: likeBlogMutation.mutateAsync,
     deleteBlog: deleteBlogMutation.mutateAsync,
+    addComment: addCommentMutation.mutateAsync,
   }
 }
