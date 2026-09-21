@@ -1,18 +1,6 @@
-import { useParams } from 'react-router-dom'
 import { Button, Paper, Stack, Typography } from '@mui/material'
-import NotFound from './NotFound'
 
-const Blog = ({ blogs, user, handleLike, handleDelete }) => {
-  const id = useParams().id
-  const blog = blogs.find((candidate) => candidate.id === id)
-
-  // A direct reload of /blogs/:id reaches this component before the blog list has
-  // arrived, and a well-formed but nonexistent id never matches. Both render the
-  // same page-not-found view instead of dereferencing "blog".
-  if (!blog) {
-    return <NotFound />
-  }
-
+const Blog = ({ blog, user, handleLike, handleDelete }) => {
   const own = user && blog.user && user.username === blog.user.username
 
   return (

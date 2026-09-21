@@ -27,7 +27,7 @@ const renderBlog = (user) => {
         <Route
           path="/blogs/:id"
           element={
-            <Blog blogs={[blog]} user={user} handleLike={handleLike} handleDelete={handleDelete} />
+            <Blog blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
           }
         />
       </Routes>

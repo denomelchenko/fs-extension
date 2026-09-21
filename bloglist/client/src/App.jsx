@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { Navigate, Route, Routes, useNavigate } from 'react-router-dom'
-import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import BlogList from './components/BlogList'
 import ErrorBoundary from './components/ErrorBoundary'
@@ -8,29 +8,29 @@ import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
 import NotFound from './components/NotFound'
 import Notification from './components/Notification'
+import SingleBlog from './components/SingleBlog'
 import { useNotify } from './contexts/NotificationContext'
+import { useBlogs } from './hooks/useBlogs'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([])
-  const [user, setUser] = useState(null)
-  const { notify } = useNotify()
-  const navigate = useNavigate()
-
-  useEffect(() => {
-    blogService.getAll().then((loadedBlogs) => setBlogs(loadedBlogs))
-  }, [])
-
-  useEffect(() => {
+  const [user, setUser] = useState(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
 
-    if (loggedUserJSON) {
-      const loggedUser = JSON.parse(loggedUserJSON)
-      setUser(loggedUser)
-      blogService.setToken(loggedUser.token)
+    if (!loggedUserJSON) {
+      return null
     }
-  }, [])
+
+    const loggedUser = JSON.parse(loggedUserJSON)
+    blogService.setToken(loggedUser.token)
+
+    return loggedUser
+  })
+  const { notify } = useNotify()
+  const { addBlog } = useBlogs()
+  const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const handleLogin = async (username, password) => {
     try {
@@ -56,9 +56,8 @@ const App = () => {
 
   const handleCreate = async (blogObject) => {
     try {
-      const createdBlog = await blogService.create(blogObject)
+      const createdBlog = await addBlog(blogObject)
 
-      setBlogs(blogs.concat(createdBlog))
       notify({
         text: 'a new blog ' + createdBlog.title + ' by ' + createdBlog.author + ' added',
         type: 'success',
@@ -79,12 +78,8 @@ const App = () => {
     }
 
     try {
-      const returnedBlog = await blogService.update(blog.id, changedBlog)
-      const updatedBlog = { ...returnedBlog, user: blog.user }
-
-      setBlogs(
-        blogs.map((candidate) => (candidate.id === returnedBlog.id ? updatedBlog : candidate))
-      )
+      await blogService.update(blog.id, changedBlog)
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
     } catch {
       notify({ text: 'liking the blog failed', type: 'error' })
     }
@@ -97,8 +92,7 @@ const App = () => {
 
     try {
       await blogService.remove(blog.id)
-
-      setBlogs(blogs.filter((candidate) => candidate.id !== blog.id))
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
       notify({ text: 'blog ' + blog.title + ' removed', type: 'success' })
       navigate('/')
     } catch {
@@ -106,29 +100,25 @@ const App = () => {
     }
   }
 
-  const blogsByLikes = [...blogs].sort((a, b) => b.likes - a.likes)
-
   return (
     <div>
       <Navigation user={user} onLogout={handleLogout} />
       <Notification />
       <ErrorBoundary>
         <Routes>
-          <Route path="/" element={<BlogList blogs={blogsByLikes} />} />
+          <Route path="/" element={<BlogList />} />
           <Route
             path="/login"
             element={user ? <Navigate replace to="/" /> : <LoginForm onLogin={handleLogin} />}
           />
           <Route
             path="/blogs/new"
-            element={
-              user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />
-            }
+            element={user ? <BlogForm createBlog={handleCreate} /> : <Navigate replace to="/login" />}
           />
           <Route
             path="/blogs/:id"
             element={
-              <Blog blogs={blogs} user={user} handleLike={handleLike} handleDelete={handleDelete} />
+              <SingleBlog user={user} handleLike={handleLike} handleDelete={handleDelete} />
             }
           />
           <Route path="*" element={<NotFound />} />
