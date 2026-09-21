@@ -1,13 +1,16 @@
 import { Alert } from '@mui/material'
+import { useNotification } from '../contexts/NotificationContext'
 
-const Notification = ({ message }) => {
-  if (!message) {
+const Notification = () => {
+  const { notification } = useNotification()
+
+  if (!notification) {
     return null
   }
 
   return (
-    <Alert severity={message.type === 'error' ? 'error' : 'success'} sx={{ mt: 2 }}>
-      {message.text}
+    <Alert severity={notification.type === 'error' ? 'error' : 'success'} sx={{ mt: 2 }}>
+      {notification.text}
     </Alert>
   )
 }

@@ -8,13 +8,14 @@ import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
 import NotFound from './components/NotFound'
 import Notification from './components/Notification'
+import { useNotify } from './contexts/NotificationContext'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
-  const [notification, setNotification] = useState(null)
+  const { notify } = useNotify()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -31,16 +32,6 @@ const App = () => {
     }
   }, [])
 
-  useEffect(() => {
-    if (!notification) {
-      return undefined
-    }
-
-    const timer = setTimeout(() => setNotification(null), 5000)
-
-    return () => clearTimeout(timer)
-  }, [notification])
-
   const handleLogin = async (username, password) => {
     try {
       const loggedUser = await loginService.login({ username, password })
@@ -48,10 +39,10 @@ const App = () => {
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(loggedUser))
       blogService.setToken(loggedUser.token)
       setUser(loggedUser)
-      setNotification({ text: 'logged in as ' + loggedUser.name, type: 'success' })
+      notify({ text: 'logged in as ' + loggedUser.name, type: 'success' })
       navigate('/')
     } catch {
-      setNotification({ text: 'wrong username or password', type: 'error' })
+      notify({ text: 'wrong username or password', type: 'error' })
     }
   }
 
@@ -59,7 +50,7 @@ const App = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.setToken(null)
     setUser(null)
-    setNotification({ text: 'logged out', type: 'success' })
+    notify({ text: 'logged out', type: 'success' })
     navigate('/')
   }
 
@@ -68,13 +59,13 @@ const App = () => {
       const createdBlog = await blogService.create(blogObject)
 
       setBlogs(blogs.concat(createdBlog))
-      setNotification({
+      notify({
         text: 'a new blog ' + createdBlog.title + ' by ' + createdBlog.author + ' added',
         type: 'success',
       })
       navigate('/')
     } catch {
-      setNotification({ text: 'blog could not be created', type: 'error' })
+      notify({ text: 'blog could not be created', type: 'error' })
     }
   }
 
@@ -95,7 +86,7 @@ const App = () => {
         blogs.map((candidate) => (candidate.id === returnedBlog.id ? updatedBlog : candidate))
       )
     } catch {
-      setNotification({ text: 'liking the blog failed', type: 'error' })
+      notify({ text: 'liking the blog failed', type: 'error' })
     }
   }
 
@@ -108,10 +99,10 @@ const App = () => {
       await blogService.remove(blog.id)
 
       setBlogs(blogs.filter((candidate) => candidate.id !== blog.id))
-      setNotification({ text: 'blog ' + blog.title + ' removed', type: 'success' })
+      notify({ text: 'blog ' + blog.title + ' removed', type: 'success' })
       navigate('/')
     } catch {
-      setNotification({ text: 'deleting the blog failed', type: 'error' })
+      notify({ text: 'deleting the blog failed', type: 'error' })
     }
   }
 
@@ -120,7 +111,7 @@ const App = () => {
   return (
     <div>
       <Navigation user={user} onLogout={handleLogout} />
-      <Notification message={notification} />
+      <Notification />
       <ErrorBoundary>
         <Routes>
           <Route path="/" element={<BlogList blogs={blogsByLikes} />} />
