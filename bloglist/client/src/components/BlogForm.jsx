@@ -1,19 +1,19 @@
-import { useState } from 'react'
 import { Button, Container, TextField } from '@mui/material'
+import { useField } from '../hooks/useField'
 
 const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const { reset: resetTitle, ...title } = useField('text')
+  const { reset: resetAuthor, ...author } = useField('text')
+  const { reset: resetUrl, ...url } = useField('text')
 
   const addBlog = (event) => {
     event.preventDefault()
 
-    createBlog({ title, author, url })
+    createBlog({ title: title.value, author: author.value, url: url.value })
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    resetTitle()
+    resetAuthor()
+    resetUrl()
   }
 
   return (
@@ -21,28 +21,13 @@ const BlogForm = ({ createBlog }) => {
       <h2>create new blog</h2>
       <form onSubmit={addBlog}>
         <div>
-          <TextField
-            label="title"
-            name="title"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
+          <TextField label="title" name="title" {...title} />
         </div>
         <div>
-          <TextField
-            label="author"
-            name="author"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
+          <TextField label="author" name="author" {...author} />
         </div>
         <div>
-          <TextField
-            label="url"
-            name="url"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
+          <TextField label="url" name="url" {...url} />
         </div>
         <Button variant="contained" color="primary" type="submit">
           create
