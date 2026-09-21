@@ -7,6 +7,9 @@ const Navigation = ({ user, onLogout }) => (
       <Button color="inherit" component={Link} to="/">
         blogs
       </Button>
+      <Button color="inherit" component={Link} to="/users">
+        users
+      </Button>
       {!user && (
         <Button color="inherit" component={Link} to="/login">
           login

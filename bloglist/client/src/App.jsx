@@ -7,6 +7,7 @@ import Navigation from './components/Navigation'
 import NotFound from './components/NotFound'
 import Notification from './components/Notification'
 import SingleBlog from './components/SingleBlog'
+import UserList from './components/UserList'
 import { useNotify } from './contexts/NotificationContext'
 import { useUser } from './contexts/UserContext'
 import { useBlogs } from './hooks/useBlogs'
@@ -97,6 +98,7 @@ const App = () => {
             path="/blogs/:id"
             element={<SingleBlog user={user} handleLike={handleLike} handleDelete={handleDelete} />}
           />
+          <Route path="/users" element={<UserList />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </ErrorBoundary>
