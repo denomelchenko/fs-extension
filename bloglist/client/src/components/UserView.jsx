@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { Container, List, ListItem, ListItemText, Paper, Typography } from '@mui/material'
 import NotFound from './NotFound'
 import { useUsers } from '../hooks/useUsers'
 
@@ -17,15 +18,23 @@ const UserView = () => {
   }
 
   return (
-    <div>
-      <h2>{user.name}</h2>
-      <h3>added blogs</h3>
-      <ul>
-        {user.blogs.map((blog) => (
-          <li key={blog.id}>{blog.title}</li>
-        ))}
-      </ul>
-    </div>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        {user.name}
+      </Typography>
+      <Typography variant="h6" component="h3" gutterBottom>
+        added blogs
+      </Typography>
+      <Paper>
+        <List dense>
+          {user.blogs.map((blog) => (
+            <ListItem key={blog.id} divider>
+              <ListItemText primary={blog.title} />
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </Container>
   )
 }
 

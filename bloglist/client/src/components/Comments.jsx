@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from '@mui/material'
+import { Button, List, ListItem, ListItemText, Paper, Stack, TextField, Typography } from '@mui/material'
 import { useField } from '../hooks/useField'
 
 const Comments = ({ comments = [], addComment }) => {
@@ -11,22 +11,26 @@ const Comments = ({ comments = [], addComment }) => {
   }
 
   return (
-    <div>
-      <Typography variant="h6">comments</Typography>
-      <ul>
+    <Paper sx={{ p: 2, mt: 2 }}>
+      <Typography variant="h6" component="h3" gutterBottom>
+        comments
+      </Typography>
+      <List dense>
         {comments.map((text, index) => (
-          <li key={index + ':' + text}>{text}</li>
+          <ListItem key={index + ':' + text} divider>
+            <ListItemText primary={text} />
+          </ListItem>
         ))}
-      </ul>
+      </List>
       <form onSubmit={handleSubmit}>
-        <div>
+        <Stack direction="row" spacing={1} sx={{ mt: 2 }} alignItems="center">
           <TextField label="comment" name="comment" size="small" {...comment} />
-        </div>
-        <Button variant="contained" type="submit" sx={{ mt: 1 }}>
-          add comment
-        </Button>
+          <Button variant="contained" type="submit">
+            add comment
+          </Button>
+        </Stack>
       </form>
-    </div>
+    </Paper>
   )
 }
 

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import {
+  Container,
   Paper,
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material'
 import { useUsers } from '../hooks/useUsers'
 
@@ -18,33 +20,39 @@ const UserList = () => {
   }
 
   if (isError) {
-    return <div>users could not be loaded</div>
+    return (
+      <Container maxWidth="sm" sx={{ mt: 3 }}>
+        <Typography>users could not be loaded</Typography>
+      </Container>
+    )
   }
 
   return (
-    <div>
-      <h2>users</h2>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        users
+      </Typography>
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>name</TableCell>
-              <TableCell>blogs created</TableCell>
+              <TableCell align="right">blogs created</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {users.map((user) => (
-              <TableRow key={user.id}>
+              <TableRow key={user.id} hover>
                 <TableCell>
                   <Link to={'/users/' + user.id}>{user.name}</Link>
                 </TableCell>
-                <TableCell>{user.blogs.length}</TableCell>
+                <TableCell align="right">{user.blogs.length}</TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+    </Container>
   )
 }
 

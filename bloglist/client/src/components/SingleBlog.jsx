@@ -1,4 +1,5 @@
 import { useParams } from 'react-router-dom'
+import { Container } from '@mui/material'
 import Blog from './Blog'
 import Comments from './Comments'
 import NotFound from './NotFound'
@@ -19,13 +20,13 @@ const SingleBlog = ({ user, handleLike, handleDelete }) => {
   }
 
   return (
-    <div>
+    <Container maxWidth="sm" sx={{ mt: 3 }}>
       <Blog blog={blog} user={user} handleLike={handleLike} handleDelete={handleDelete} />
       <Comments
         comments={blog.comments}
         addComment={(comment) => addComment({ id: blog.id, comment })}
       />
-    </div>
+    </Container>
   )
 }
 
